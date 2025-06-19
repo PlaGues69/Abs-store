@@ -1,7 +1,8 @@
 import 'package:abs_onlinestore/features/login/presentation/view/login_view.dart';
 import 'package:abs_onlinestore/features/splash/presentation/view_model/splash_model.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:page_transition/page_transition.dart';
 
 class SplashScreenView extends StatelessWidget {
   final SplashModel _viewmodel = SplashModel();
