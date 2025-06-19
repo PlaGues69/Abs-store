@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yatra_app/model/splash_model.dart';
-import 'package:yatra_app/view/signin_view.dart';
-import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:page_transition/page_transition.dart';
+
 
 class SplashScreenView extends StatelessWidget {
   final SplashModel _viewmodel = SplashModel();
