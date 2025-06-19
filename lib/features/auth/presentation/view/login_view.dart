@@ -1,6 +1,6 @@
 import 'package:abs_onlinestore/features/dashboard/presentation/view/dashboard_view.dart';
-import 'package:abs_onlinestore/features/login/presentation/view_model/login_model.dart';
-import 'package:abs_onlinestore/features/signup/presentation/view/signup_view.dart';
+import 'package:abs_onlinestore/features/auth/presentation/view_model/login_view_model/login_model.dart';
+import 'package:abs_onlinestore/features/auth/presentation/view/signup_view.dart';
 import 'package:flutter/material.dart';
 
 class SignInView extends StatefulWidget {
@@ -156,7 +156,7 @@ class _SignInViewState extends State<SignInView> {
                 // Social Login Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [_buildSocialButton('assets/images/facebook.png')],
+                  children: [_buildSocialButton('assets/image/facebook.png')],
                 ),
 
                 const SizedBox(height: 20),

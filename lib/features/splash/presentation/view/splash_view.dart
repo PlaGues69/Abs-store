@@ -1,4 +1,4 @@
-import 'package:abs_onlinestore/features/login/presentation/view/login_view.dart';
+import 'package:abs_onlinestore/features/auth/presentation/view/login_view.dart';
 import 'package:abs_onlinestore/features/splash/presentation/view_model/splash_model.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ class SplashScreenView extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 Image.asset(
-                  'assets/icons/logo.png', // Use your diamond logo here
+                  'assets/icon/logo.png', // Use your diamond logo here
                   height: 120,
                 ),
                 const SizedBox(height: 30),
@@ -45,11 +45,11 @@ class SplashScreenView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset(
-                        'assets/images/jett.png', // Left character
+                        'assets/image/jett.png', // Left character
                         height: 160,
                       ),
                       Image.asset(
-                        'assets/images/raze.png', // Right character
+                        'assets/image/raze.png', // Right character
                         height: 160,
                       ),
                     ],

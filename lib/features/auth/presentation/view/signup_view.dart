@@ -1,4 +1,4 @@
-import 'package:abs_onlinestore/features/login/presentation/view/login_view.dart';
+import 'package:abs_onlinestore/features/auth/presentation/view/login_view.dart';
 import 'package:flutter/material.dart';
 
 class SignUpView extends StatefulWidget {
