@@ -1,8 +1,18 @@
 import 'package:abs_onlinestore/app/app.dart';
+import 'package:abs_onlinestore/core/network/hive_service.dart';
+import 'package:abs_onlinestore/app/service_locator/service_locator.dart'; // 👈 Add your locator
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // ✅ Initialize Hive (register adapters + open boxes)
+  await HiveService.init();
+
+  // ✅ Set up dependency injection
+  setupLocator();
+
   runApp(const MyApp());
 }
 
@@ -15,12 +25,9 @@ class MyApp extends StatelessWidget {
       title: 'ABS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF9DB6BD), // Light Blue BG
-        primaryColor: const Color(0xFFD63327), // Red
-        textTheme: GoogleFonts.urbanistTextTheme(
-          // You can change to Poppins if you prefer
-          Theme.of(context).textTheme,
-        ),
+        scaffoldBackgroundColor: const Color(0xFF9DB6BD),
+        primaryColor: const Color(0xFFD63327),
+        textTheme: GoogleFonts.urbanistTextTheme(Theme.of(context).textTheme),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
@@ -35,7 +42,7 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFD63327), // Red
+            backgroundColor: const Color(0xFFD63327),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(25),
             ),
