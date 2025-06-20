@@ -1,6 +1,7 @@
-import 'package:abs_onlinestore/features/dashboard/presentation/view/dashboard_view.dart';
-import 'package:abs_onlinestore/features/auth/presentation/view_model/login_view_model/login_model.dart';
 import 'package:abs_onlinestore/features/auth/presentation/view/signup_view.dart';
+import 'package:abs_onlinestore/features/auth/presentation/view/forgot_password_view.dart';
+import 'package:abs_onlinestore/features/auth/presentation/view_model/login_view_model/login_model.dart';
+import 'package:abs_onlinestore/features/dashboard/presentation/view/dashboard_view.dart';
 import 'package:flutter/material.dart';
 
 class SignInView extends StatefulWidget {
@@ -92,10 +93,18 @@ class _SignInViewState extends State<SignInView> {
                 ),
 
                 const SizedBox(height: 8),
+
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ForgotPasswordView(),
+                        ),
+                      );
+                    },
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
