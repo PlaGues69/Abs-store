@@ -1,3 +1,4 @@
+import 'package:abs_onlinestore/features/auth/data/service/auth_service.dart';
 import 'package:abs_onlinestore/features/auth/presentation/view/login_view.dart';
 import 'package:flutter/material.dart';
 
@@ -9,45 +10,79 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
-  String fullName = '';
-  String email = '';
-  String password = '';
-  String confirmPassword = '';
-  String? error;
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
-  void _signup() {
+  String? error;
+  bool isLoading = false;
+
+  void _signup() async {
+    setState(() {
+      error = null;
+    });
+
+    final fullName = fullNameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
+
+    if (fullName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      setState(() {
+        error = 'All fields are required';
+      });
+      return;
+    }
+
     if (password != confirmPassword) {
       setState(() {
         error = 'Passwords do not match';
       });
       return;
     }
-    if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await AuthService.register(fullName, email, password);
+      print("Registered: $response");
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Account created successfully!"),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const SignInView()),
+      );
+    } catch (e) {
       setState(() {
-        error = 'Please fill all fields';
+        error = e.toString().replaceAll('Exception: ', '');
       });
-      return;
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-
-    // Success
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Account created successfully!"),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
-      ),
-    );
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const SignInView()),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF9CB7C2), // Light bluish background
+      backgroundColor: const Color(0xFF9CB7C2),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -65,16 +100,14 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
                 const SizedBox(height: 40),
 
-                // Full Name
                 TextField(
-                  onChanged: (value) => fullName = value,
+                  controller: fullNameController,
                   decoration: _buildInputDecoration('Full Name', Icons.person),
                 ),
                 const SizedBox(height: 16),
 
-                // Email
                 TextField(
-                  onChanged: (value) => email = value,
+                  controller: emailController,
                   decoration: _buildInputDecoration(
                     'Phone or Gmail',
                     Icons.email,
@@ -82,17 +115,15 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password
                 TextField(
-                  onChanged: (value) => password = value,
+                  controller: passwordController,
                   obscureText: true,
                   decoration: _buildInputDecoration('Password', Icons.lock),
                 ),
                 const SizedBox(height: 16),
 
-                // Confirm Password
                 TextField(
-                  onChanged: (value) => confirmPassword = value,
+                  controller: confirmPasswordController,
                   obscureText: true,
                   decoration: _buildInputDecoration(
                     'Confirm Password',
@@ -107,12 +138,11 @@ class _SignUpViewState extends State<SignUpView> {
 
                 const SizedBox(height: 24),
 
-                // Sign Up Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: _signup,
+                    onPressed: isLoading ? null : _signup,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFE53935),
                       shape: RoundedRectangleBorder(
@@ -120,14 +150,16 @@ class _SignUpViewState extends State<SignUpView> {
                       ),
                       elevation: 4,
                     ),
-                    child: const Text(
-                      'SIGN UP',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        letterSpacing: 1,
-                      ),
-                    ),
+                    child: isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            'SIGN UP',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              letterSpacing: 1,
+                            ),
+                          ),
                   ),
                 ),
 

@@ -12,31 +12,40 @@ class SignInView extends StatefulWidget {
 }
 
 class _SignInViewState extends State<SignInView> {
-  final SignInModel model = SignInModel();
+  final Signinmodel model = Signinmodel();
   String email = '';
   String password = '';
   String? error;
 
-  void _login() {
-    final isValid = model.validateCredentials(email.trim(), password.trim());
+  void _login() async {
+    setState(() {
+      error = null;
+    });
 
-    final snackBar = SnackBar(
-      content: Text(
-        isValid ? 'Login successful' : 'Invalid credentials',
-        style: const TextStyle(color: Colors.white),
-      ),
-      backgroundColor: (isValid ? Colors.green : Colors.red),
-      behavior: SnackBarBehavior.floating,
-      margin: const EdgeInsets.all(16),
-      duration: const Duration(seconds: 2),
-    );
+    await model.login(email.trim(), password.trim());
 
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    setState(() {
+      error = model.error;
+    });
 
-    if (isValid) {
+    if (model.loginSuccess) {
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const DashboardView()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            model.error ?? 'Login failed',
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          duration: const Duration(seconds: 2),
+        ),
       );
     }
   }
@@ -44,7 +53,7 @@ class _SignInViewState extends State<SignInView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF9CB7C2), // Light bluish background
+      backgroundColor: const Color(0xFF9CB7C2),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -62,36 +71,17 @@ class _SignInViewState extends State<SignInView> {
                 ),
                 const SizedBox(height: 40),
 
-                // Email Field
                 TextField(
                   onChanged: (value) => email = value,
-                  decoration: InputDecoration(
-                    hintText: 'Email',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
+                  decoration: _inputDecoration('Email'),
                 ),
                 const SizedBox(height: 20),
 
-                // Password Field
                 TextField(
                   onChanged: (value) => password = value,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
+                  decoration: _inputDecoration('Password'),
                 ),
-
                 const SizedBox(height: 8),
 
                 Align(
@@ -126,27 +116,28 @@ class _SignInViewState extends State<SignInView> {
 
                 const SizedBox(height: 20),
 
-                // Login Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: _login,
+                    onPressed: model.isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE53935), // Red color
+                      backgroundColor: const Color(0xFFE53935),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                       elevation: 4,
                     ),
-                    child: const Text(
-                      'LOGIN',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        letterSpacing: 1,
-                      ),
-                    ),
+                    child: model.isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            'LOGIN',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              letterSpacing: 1,
+                            ),
+                          ),
                   ),
                 ),
 
@@ -161,15 +152,12 @@ class _SignInViewState extends State<SignInView> {
                 ),
 
                 const SizedBox(height: 16),
-
-                // Social Login Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [_buildSocialButton('assets/image/facebook.png')],
                 ),
 
                 const SizedBox(height: 20),
-
                 Center(
                   child: TextButton(
                     onPressed: () => Navigator.push(
@@ -186,6 +174,18 @@ class _SignInViewState extends State<SignInView> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hintText) {
+    return InputDecoration(
+      hintText: hintText,
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide.none,
       ),
     );
   }
